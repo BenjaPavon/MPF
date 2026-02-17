@@ -1,0 +1,15 @@
+<h1>Usuarios</h1>
+
+<div style="display:flex; gap:8px; margin-bottom:12px;">
+  <input placeholder="Nombre" [(ngModel)]="newName" />
+  <input placeholder="Email" [(ngModel)]="newEmail" />
+  <button (click)="addUser()" [disabled]="!newName.trim() || !newEmail.trim()">
+    Agregar
+  </button>
+</div>
+
+<ul>
+  <li *ngFor="let u of users">
+    <b>{{ u.name }}</b> — {{ u.email }}
+  </li>
+</ul>
