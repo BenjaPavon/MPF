@@ -13,7 +13,7 @@ export class UserService {
     return this.http.get<User[]>(this.baseUrl);
   }
 
-  add(user: Omit<User, 'id'>): Observable<User> {
+  add(user: Omit<User, 'id'>) {
     return this.http.post<User>(this.baseUrl, user);
   }
 

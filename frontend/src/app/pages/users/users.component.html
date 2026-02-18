@@ -3,45 +3,81 @@
 <form
   [formGroup]="createForm"
   (ngSubmit)="addUser()"
-  style="display:flex; gap:8px; margin-bottom:12px; align-items:flex-start;"
+  style="display:flex; gap:12px; margin-bottom:12px; align-items:flex-start;"
 >
+  <!-- Nombre -->
   <div>
     <input placeholder="Nombre" formControlName="name" />
-    <div style="color:crimson; font-size:12px;" *ngIf="createForm.controls.name.touched && createForm.controls.name.invalid">
+    <div
+      style="color:crimson; font-size:12px;"
+      *ngIf="createForm.controls.name.touched && createForm.controls.name.invalid"
+    >
       <div *ngIf="createForm.controls.name.errors?.['required']">El nombre es obligatorio.</div>
       <div *ngIf="createForm.controls.name.errors?.['minlength']">Mínimo 2 caracteres.</div>
     </div>
   </div>
 
+  <!-- Email -->
   <div>
     <input placeholder="Email" formControlName="email" />
-    <div style="color:crimson; font-size:12px;" *ngIf="createForm.controls.email.touched && createForm.controls.email.invalid">
+    <div
+      style="color:crimson; font-size:12px;"
+      *ngIf="createForm.controls.email.touched && createForm.controls.email.invalid"
+    >
       <div *ngIf="createForm.controls.email.errors?.['required']">El email es obligatorio.</div>
+      <!-- Si usás Validators.email, esta sería la key correcta -->
+      <div *ngIf="createForm.controls.email.errors?.['email']">Formato de email inválido.</div>
+
+      <!-- Si vos usás pattern para @mpf.gob.ar, entonces dejá pattern -->
       <div *ngIf="createForm.controls.email.errors?.['pattern']">El email debe ser &#64;mpf.gob.ar</div>
     </div>
   </div>
 
-  <button type="submit" [disabled]="createForm.invalid">Agregar</button>
-  <button type="button" (click)="loadUsers()">Recargar</button>
+  <!-- ✅ FormArray de Teléfonos -->
+  <div formArrayName="phones">
+    <label style="display:block; margin-bottom:4px;">Teléfonos</label>
+
+    <div *ngFor="let ctrl of phones.controls; let i = index" style="display:flex; gap:6px; margin-bottom:6px;">
+      <input [formControlName]="i" placeholder="Teléfono" />
+
+      <button type="button" (click)="removePhone(i)" *ngIf="phones.length > 1">
+        Quitar
+      </button>
+    </div>
+
+    <button type="button" (click)="addPhone()">Agregar Teléfono</button>
+  </div>
+
+  <!-- Acciones -->
+  <div style="display:flex; flex-direction:column; gap:6px;">
+    <button type="submit" [disabled]="createForm.invalid">Agregar</button>
+    <button type="button" (click)="loadUsers()">Recargar</button>
+  </div>
 </form>
+
 <p *ngIf="loading">Cargando...</p>
 
 <!-- Listado + Edit/Delete -->
 <ul *ngIf="!loading">
-  <!-- ngClass con condición true/false -->
-  <li *ngFor="let u of users" 
-      [ngClass]="{ 'editing': editingId === u.id, 'not-editing': editingId !== u.id }">
+  <li
+    *ngFor="let u of users"
+    [ngClass]="{ 'editing': editingId === u.id, 'not-editing': editingId !== u.id }"
+    style="margin-bottom:10px;"
+  >
     <!-- Modo normal -->
     <div *ngIf="editingId !== u.id" style="display:flex; gap:10px; align-items:center;">
-      <!-- ngClass con array -->
-      <span [ngClass]="['user-item', 'highlight', 'shadow']" style="min-width:260px;">
+      <span style="min-width:260px;">
         <b>{{ u.name }}</b> — {{ u.email }}
+        <div style="font-size:12px; opacity:0.8" *ngIf="u.phones?.length">
+          Tel: {{ u.phones ? u.phones.join(' / ') : '' }}
+        </div >
       </span>
 
       <button (click)="startEdit(u)" type="button">Editar</button>
       <button (click)="deleteUser(u)" type="button">Eliminar</button>
-      <button [routerLink]="['/users', u.id]" style="margin-left:10px;">Ver detalle</button>
 
+      <!-- Mejor como <a>, pero tu botón con routerLink funciona si importaste RouterLink -->
+      <a [routerLink]="['/users', u.id]" style="margin-left:10px;">Ver detalle</a>
     </div>
 
     <!-- Modo edición -->
@@ -49,11 +85,7 @@
       <input [(ngModel)]="editName" placeholder="Nombre" />
       <input [(ngModel)]="editEmail" placeholder="Email" />
 
-      <button
-        (click)="saveEdit(u)"
-        [disabled]="!editName.trim() || !editEmail.trim()"
-        type="button"
-      >
+      <button (click)="saveEdit(u)" [disabled]="!editName.trim() || !editEmail.trim()" type="button">
         Guardar
       </button>
       <button (click)="cancelEdit()" type="button">Cancelar</button>

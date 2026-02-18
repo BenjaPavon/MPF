@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { RouterLink } from '@angular/router'; 
 
 @Component({
@@ -29,8 +29,11 @@ export class UsersComponent implements OnInit {
   editEmail = '';
   
   createForm = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@mpf\.gob\.ar$/)]],
+    name: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
+    phones: this.fb.array([
+      this.fb.control('', Validators.required)
+    ])
   });
 
   constructor() { }
@@ -64,14 +67,21 @@ export class UsersComponent implements OnInit {
     const name = this.createForm.value.name!.trim();
     const email = this.createForm.value.email!.trim();
 
-    this.userService.add({ name, email }).subscribe({
+    const phones = this.phones.controls
+      .map(c => String(c.value ?? '').trim())
+      .filter(p => p.length > 0);
+
+    this.userService.add({ name, email, phones }).subscribe({
       next: () => {
         this.createForm.reset();
+        // dejar 1 input de teléfono “vacío” para el próximo alta
+        this.createForm.setControl('phones', this.fb.array([this.fb.control('', Validators.required)]));
         this.loadUsers();
       },
       error: () => (this.error = 'No se pudo agregar el usuario.'),
     });
   }
+
 
   // ✅ Iniciar edición
   startEdit(u: User): void {
@@ -103,6 +113,20 @@ export class UsersComponent implements OnInit {
       },
       error: () => (this.error = 'No se pudo actualizar el usuario.'),
     });
+  }
+
+  get phones(): FormArray {
+    return this.createForm.get('phones') as FormArray;
+  }
+
+  addPhone(): void {
+    this.phones.push(
+      this.fb.control('', Validators.required)
+    );
+  }
+
+  removePhone(index: number): void {
+    this.phones.removeAt(index);
   }
 
   // ✅ Eliminar

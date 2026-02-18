@@ -3,27 +3,29 @@
     {
       "id": 1,
       "name": "Benja",
-      "email": "benja@gmail.com"
+      "email": "benja@gmail.com",
+      "phones": [
+        "3517537371"
+      ]
     },
     {
       "id": 2,
       "name": "Ana",
-      "email": "ana@gmail.com"
+      "email": "ana@gmail.com",
+      "phones": [
+        "3511111111",
+        "3512222222"
+      ]
     },
     {
-      "name": "Sebas",
-      "email": "seba@gmail.com",
+      "name": "Holas",
+      "email": "hola@gmail.com",
+      "phones": [
+        "3517537371",
+        "11111111111",
+        "3434324444"
+      ],
       "id": 3
-    },
-    {
-      "name": "Marisa",
-      "email": "mari@gmail.com",
-      "id": 4
-    },
-    {
-      "name": "Hola",
-      "email": "hola@mpf.gob.ar",
-      "id": 5
     }
   ]
 }
