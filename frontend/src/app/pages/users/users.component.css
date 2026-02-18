@@ -1,0 +1,27 @@
+/* Clases para ngClass con condición true/false */
+.editing {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding-left: 8px;
+}
+
+.not-editing {
+  background-color: #f8f9fa;
+  border-left: 4px solid #28a745;
+  padding-left: 8px;
+}
+
+/* Clases para ngClass con array */
+.user-item {
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.highlight {
+  font-weight: bold;
+}
+
+.shadow {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

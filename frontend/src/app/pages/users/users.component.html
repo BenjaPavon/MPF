@@ -1,15 +1,62 @@
 <h1>Usuarios</h1>
 
-<div style="display:flex; gap:8px; margin-bottom:12px;">
-  <input placeholder="Nombre" [(ngModel)]="newName" />
-  <input placeholder="Email" [(ngModel)]="newEmail" />
-  <button (click)="addUser()" [disabled]="!newName.trim() || !newEmail.trim()">
-    Agregar
-  </button>
-</div>
+<form
+  [formGroup]="createForm"
+  (ngSubmit)="addUser()"
+  style="display:flex; gap:8px; margin-bottom:12px; align-items:flex-start;"
+>
+  <div>
+    <input placeholder="Nombre" formControlName="name" />
+    <div style="color:crimson; font-size:12px;" *ngIf="createForm.controls.name.touched && createForm.controls.name.invalid">
+      <div *ngIf="createForm.controls.name.errors?.['required']">El nombre es obligatorio.</div>
+      <div *ngIf="createForm.controls.name.errors?.['minlength']">Mínimo 2 caracteres.</div>
+    </div>
+  </div>
 
-<ul>
-  <li *ngFor="let u of users">
-    <b>{{ u.name }}</b> — {{ u.email }}
+  <div>
+    <input placeholder="Email" formControlName="email" />
+    <div style="color:crimson; font-size:12px;" *ngIf="createForm.controls.email.touched && createForm.controls.email.invalid">
+      <div *ngIf="createForm.controls.email.errors?.['required']">El email es obligatorio.</div>
+      <div *ngIf="createForm.controls.email.errors?.['pattern']">El email debe ser &#64;mpf.gob.ar</div>
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="createForm.invalid">Agregar</button>
+  <button type="button" (click)="loadUsers()">Recargar</button>
+</form>
+<p *ngIf="loading">Cargando...</p>
+
+<!-- Listado + Edit/Delete -->
+<ul *ngIf="!loading">
+  <!-- ngClass con condición true/false -->
+  <li *ngFor="let u of users" 
+      [ngClass]="{ 'editing': editingId === u.id, 'not-editing': editingId !== u.id }">
+    <!-- Modo normal -->
+    <div *ngIf="editingId !== u.id" style="display:flex; gap:10px; align-items:center;">
+      <!-- ngClass con array -->
+      <span [ngClass]="['user-item', 'highlight', 'shadow']" style="min-width:260px;">
+        <b>{{ u.name }}</b> — {{ u.email }}
+      </span>
+
+      <button (click)="startEdit(u)" type="button">Editar</button>
+      <button (click)="deleteUser(u)" type="button">Eliminar</button>
+      <button [routerLink]="['/users', u.id]" style="margin-left:10px;">Ver detalle</button>
+
+    </div>
+
+    <!-- Modo edición -->
+    <div *ngIf="editingId === u.id" style="display:flex; gap:8px; align-items:center;">
+      <input [(ngModel)]="editName" placeholder="Nombre" />
+      <input [(ngModel)]="editEmail" placeholder="Email" />
+
+      <button
+        (click)="saveEdit(u)"
+        [disabled]="!editName.trim() || !editEmail.trim()"
+        type="button"
+      >
+        Guardar
+      </button>
+      <button (click)="cancelEdit()" type="button">Cancelar</button>
+    </div>
   </li>
 </ul>

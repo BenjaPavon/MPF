@@ -1,0 +1,15 @@
+<h1>Detalle de usuario</h1>
+
+<p><a routerLink="/users">← Volver</a></p>
+
+<p *ngIf="loading">Cargando...</p>
+
+<div *ngIf="error" style="color:crimson;">
+  {{ error }}
+</div>
+
+<div *ngIf="!loading && user">
+  <p><b>ID:</b> {{ user.id }}</p>
+  <p><b>Nombre:</b> {{ user.name }}</p>
+  <p><b>Email:</b> {{ user.email }}</p>
+</div>

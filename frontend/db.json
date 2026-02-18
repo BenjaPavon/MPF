@@ -1,0 +1,29 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Benja",
+      "email": "benja@gmail.com"
+    },
+    {
+      "id": 2,
+      "name": "Ana",
+      "email": "ana@gmail.com"
+    },
+    {
+      "name": "Sebas",
+      "email": "seba@gmail.com",
+      "id": 3
+    },
+    {
+      "name": "Marisa",
+      "email": "mari@gmail.com",
+      "id": 4
+    },
+    {
+      "name": "Hola",
+      "email": "hola@mpf.gob.ar",
+      "id": 5
+    }
+  ]
+}
